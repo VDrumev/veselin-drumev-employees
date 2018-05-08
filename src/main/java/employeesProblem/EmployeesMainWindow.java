@@ -11,6 +11,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -23,6 +25,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.awt.Font;
 import java.awt.Color;
 
@@ -30,8 +35,9 @@ public class EmployeesMainWindow {
 
 	private JFrame frame;
 	private JTextField textFileName;
-	private JTable tableResults;
 	private JLabel lblEmployeesresult;
+	private JTable tableResults;
+	private JPanel panel;
 
 	/**
 	 * Launch the application.
@@ -65,7 +71,7 @@ public class EmployeesMainWindow {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		frame.getContentPane().add(panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 30, 50, 30};
@@ -127,23 +133,32 @@ public class EmployeesMainWindow {
 						EmployeeTimeCounter.calcEmplTimes(EmployeesMain.getEmployeeRecords());
 						String result = EmployeeTimeCounter.findEmployees();
 						lblEmployeesresult.setText(result);
-					}
-					
-					Map<String, Long> projTimes = EmployeeTimeCounter.getProjectTimes();
-					
-					
-					
-					tableResults = new JTable();
-					JScrollPane scrollPane = new JScrollPane(table);
-					tableResults.setFillsViewportHeight(true);
-					tableResults.setModel(new DefaultTableModel(
-						new Object[][] {
-						},
-						new String[] {
-							"Employee 1", "Employee 2", "Project", "Time on project"
+
+						Map<String, Long> projTimes = EmployeeTimeCounter.getProjectTimes();
+						
+						DefaultTableModel tableModel = new DefaultTableModel(new String[] {
+								"Employee 1", "Employee 2", "Project", "Time on project"
+							}, 0);
+
+						for( String key : projTimes.keySet() ) {
+							String[] split = StringUtils.split(key, EmployeeTimeCounter.SEPARATOR);
+							
+							String[] row = { split[0], split[1], split[2], projTimes.get(key).toString() };
+							
+							tableModel.addRow(row);
 						}
-					));
-					tableResults.getColumnModel().getColumn(3).setPreferredWidth(89);
+
+						tableResults = new JTable(tableModel);
+						JScrollPane scrollPane = new JScrollPane(tableResults);
+						tableResults.setFillsViewportHeight(true);
+						GridBagConstraints gbc_table = new GridBagConstraints();
+						gbc_table.gridwidth = 3;
+						gbc_table.insets = new Insets(0, 0, 0, 5);
+						gbc_table.fill = GridBagConstraints.BOTH;
+						gbc_table.gridx = 0;
+						gbc_table.gridy = 3;
+						panel.add(scrollPane, gbc_table);
+					}
 				}
 			}
 		});
@@ -160,17 +175,10 @@ public class EmployeesMainWindow {
 		lblEmployeesresult.setFont(new Font("Tahoma", Font.BOLD, 13));
 		GridBagConstraints gbc_lblEmployeesresult = new GridBagConstraints();
 		gbc_lblEmployeesresult.gridwidth = 3;
-		gbc_lblEmployeesresult.insets = new Insets(0, 0, 5, 5);
+		gbc_lblEmployeesresult.insets = new Insets(0, 0, 5, 0);
 		gbc_lblEmployeesresult.gridx = 0;
 		gbc_lblEmployeesresult.gridy = 2;
 		panel.add(lblEmployeesresult, gbc_lblEmployeesresult);
-		
-		GridBagConstraints gbc_tableResults = new GridBagConstraints();
-		gbc_tableResults.gridwidth = 3;
-		gbc_tableResults.fill = GridBagConstraints.BOTH;
-		gbc_tableResults.gridx = 0;
-		gbc_tableResults.gridy = 3;
-		panel.add(tableResults, gbc_tableResults);
 
 	}
 

@@ -90,4 +90,8 @@ public class EmployeesMain {
 		}
 	}
 
+	public static List<EmployeeRecord> getEmployeeRecords() {
+		return employeeRecords;
+	}
+
 }

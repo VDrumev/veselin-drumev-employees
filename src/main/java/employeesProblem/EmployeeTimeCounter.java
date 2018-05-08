@@ -12,7 +12,7 @@ import org.joda.time.LocalDate;
 public class EmployeeTimeCounter {
 
 	private static Map<String, Long> projectTimes = new TreeMap<String, Long>();
-	public final static String separator = "|_|";
+	public final static String SEPARATOR = "|_|";
 	
 	public static Map<String, Long> getProjectTimes() {
 		return projectTimes;
@@ -21,9 +21,9 @@ public class EmployeeTimeCounter {
 	private static void addEmployeesTime(String emp1, String emp2, String proj, Long time){
 		String key;
 		if ( emp1.compareTo(emp2) > 0 ) {
-			key = emp1 + separator + emp2 + separator + proj;
+			key = emp1 + SEPARATOR + emp2 + SEPARATOR + proj;
 		} else {
-			key = emp2 + separator + emp1 + separator + proj;
+			key = emp2 + SEPARATOR + emp1 + SEPARATOR + proj;
 		}
 		
 		Long curTime = 0l;
@@ -89,9 +89,9 @@ public class EmployeeTimeCounter {
 		Iterator<String> iter = projectTimes.keySet().iterator();
 		while(iter.hasNext()){
 			String key = iter.next();
-			String[] data = StringUtils.split(key, separator);
+			String[] data = StringUtils.split(key, SEPARATOR);
 			Long currTime = 0l;
-			String newKey = data[0] + separator + data[1];
+			String newKey = data[0] + SEPARATOR + data[1];
 			
 			if ( emplData.containsKey(newKey) ) {
 				currTime = emplData.get(newKey);
@@ -109,7 +109,7 @@ public class EmployeeTimeCounter {
 			}
 		}
 		
-		String[] data = StringUtils.split( emplKey, separator);
+		String[] data = StringUtils.split( emplKey, SEPARATOR);
 		result = "Employee1: " + data[0] + " Employee2: " + data[1] + " worked together on projects " + time + " days.";
 		
 		return result;
